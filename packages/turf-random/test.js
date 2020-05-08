@@ -46,3 +46,18 @@ test('random(points, 10, {bbox})', t => {
     t.deepEqual(points.features[0].geometry.coordinates, [0, 0], 'feature type correct');
     t.end();
 });
+
+test('random(points, 1, {bbox,random_seed})', t => {
+    var points1 = randomPoint(1, { bbox: [0, 0, 0, 0], random_seed: 1 });
+    var points2 = randomPoint(1, { bbox: [0, 0, 0, 0], random_seed: 1 });
+    t.equal(points1.type, 'FeatureCollection', 'is a featurecollection');
+    t.equal(points1.features.length, 1, 'right number of features');
+    t.equal(points1.features[0].geometry.type, 'Point', 'feature type correct');
+    t.equal(points2.type, 'FeatureCollection', 'is a featurecollection');
+    t.equal(points2.features.length, 1, 'right number of features');
+    t.equal(points2.features[0].geometry.type, 'Point', 'feature type correct');
+    // deterministic
+    t.equal(points1.features[0].geometry.coordinates[0], points2.features[0].geometry.coordinates[0])
+    t.equal(points1.features[0].geometry.coordinates[1], points2.features[0].geometry.coordinates[1])
+    t.end();
+});

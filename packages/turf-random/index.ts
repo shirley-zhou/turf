@@ -1,3 +1,4 @@
+import seedrandom from "seedrandom";
 import {
     BBox, Feature, featureCollection, FeatureCollection, isNumber, isObject,
     LineString, lineString, point, Point, polygon, Polygon, Position,
@@ -8,15 +9,16 @@ import {
  *
  * @name randomPosition
  * @param {Array<number>} [bbox=[-180, -90, 180, 90]] a bounding box inside of which positions are placed.
+ * @param {number} [random_seed=1] a random seed
  * @returns {Array<number>} Position [longitude, latitude]
  * @example
  * var position = turf.randomPosition([-180, -90, 180, 90])
  * // => position
  */
-export function randomPosition(bbox?: BBox | {bbox: BBox}): Position {
-    if (Array.isArray(bbox)) { return coordInBBox(bbox); }
-    if (bbox && bbox.bbox) { return coordInBBox(bbox.bbox); }
-    return [lon(), lat()];
+export function randomPosition(bbox?: BBox | {bbox: BBox}, random_seed?: number): Position {
+    if (Array.isArray(bbox)) { return coordInBBox(bbox, random_seed); }
+    if (bbox && bbox.bbox) { return coordInBBox(bbox.bbox, random_seed); }
+    return [lon(random_seed), lat(random_seed)];
 }
 
 /**
@@ -26,18 +28,20 @@ export function randomPosition(bbox?: BBox | {bbox: BBox}): Position {
  * @param {number} [count=1] how many geometries will be generated
  * @param {Object} [options={}] Optional parameters
  * @param {Array<number>} [options.bbox=[-180, -90, 180, 90]] a bounding box inside of which geometries are placed.
+ * @param {number} [options.random_seed=1] a random seed
  * @returns {FeatureCollection<Point>} GeoJSON FeatureCollection of points
  * @example
- * var points = turf.randomPoint(25, {bbox: [-180, -90, 180, 90]})
+ * var points = turf.randomPoint(25, {bbox: [-180, -90, 180, 90], random_seed: 1})
  * // => points
  */
 export function randomPoint(count?: number, options: {
     bbox?: BBox,
+    random_seed?: number,
 } = {}): FeatureCollection<Point, any> {
     if (count === undefined || count === null) { count = 1; }
     const features = [];
     for (let i = 0; i < count; i++) {
-        features.push(point(randomPosition(options.bbox)));
+        features.push(point(randomPosition(options.bbox, options.random_seed)));
     }
     return featureCollection(features);
 }
@@ -166,12 +170,16 @@ function vertexToCoordinate(hub: number[]) {
     };
 }
 
-function rnd() { return Math.random() - 0.5; }
-function lon() { return rnd() * 360; }
-function lat() { return rnd() * 180; }
+function rnd(random_seed?: number) {
+    const randomFunc = random_seed ? new seedrandom(random_seed) : Math.random;
+    return randomFunc() - 0.5;
+}
+function lon(random_seed?: number) { return rnd(random_seed) * 360; }
+function lat(random_seed?: number) { return rnd(random_seed) * 180; }
 
-function coordInBBox(bbox: BBox) {
+function coordInBBox(bbox: BBox, random_seed?: number) {
+    const randomFunc = random_seed ? new seedrandom(random_seed) : Math.random;
     return [
-        (Math.random() * (bbox[2] - bbox[0])) + bbox[0],
-        (Math.random() * (bbox[3] - bbox[1])) + bbox[1]];
+        (randomFunc() * (bbox[2] - bbox[0])) + bbox[0],
+        (randomFunc() * (bbox[3] - bbox[1])) + bbox[1]];
 }
