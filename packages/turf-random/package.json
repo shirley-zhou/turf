@@ -1,7 +1,7 @@
 {
-  "name": "@turf/random",
-  "version": "6.2.0-alpha.1",
-  "description": "turf random module",
+  "name": "turf-random-seed",
+  "version": "1.0.1",
+  "description": "forked turf random module with support for random seed",
   "author": "Turf Authors",
   "license": "MIT",
   "bugs": {
@@ -10,7 +10,7 @@
   "homepage": "https://github.com/Turfjs/turf",
   "repository": {
     "type": "git",
-    "url": "git://github.com/Turfjs/turf.git"
+    "url": "git://github.com/shirley-zhou/turf.git"
   },
   "publishConfig": {
     "access": "public"
