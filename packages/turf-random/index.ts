@@ -12,7 +12,7 @@ import {
  * @param {number} [random_seed=1] a random seed
  * @returns {Array<number>} Position [longitude, latitude]
  * @example
- * var position = turf.randomPosition([-180, -90, 180, 90])
+ * var position = turf.randomPosition([-180, -90, 180, 90], 1)
  * // => position
  */
 export function randomPosition(bbox?: BBox | {bbox: BBox}, random_seed?: number): Position {
